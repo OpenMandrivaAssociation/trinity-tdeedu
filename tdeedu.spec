@@ -1,6 +1,6 @@
-#
-# Please submit bugfixes or comments via http://www.trinitydesktop.org/
-#
+%bcond clang 1
+%bcond kig 1
+%bcond v4l 1
 
 # BUILD WARNING:
 #  Remove qt-devel and qt3-devel and any kde*-devel on your system !
@@ -11,6 +11,8 @@
 %if "%{?tde_version}" == ""
 %define tde_version 14.1.5
 %endif
+%define pkg_rel 2
+
 %define tde_pkg tdeedu
 %define tde_prefix /opt/trinity
 %define tde_bindir %{tde_prefix}/bin
@@ -25,31 +27,24 @@
 %define tde_tdeincludedir %{tde_includedir}/tde
 %define tde_tdelibdir %{tde_libdir}/trinity
 
-%if 0%{?mdkversion}
 %undefine __brp_remove_la_files
 %define dont_remove_libtool_files 1
 %define _disable_rebuild_configure 1
-%endif
 
 # fixes error: Empty %files file …/debugsourcefiles.list
 %define _debugsource_template %{nil}
 
 %define tarball_name %{tde_pkg}-trinity
-%global toolchain %(readlink /usr/bin/cc)
 
 
 Name:			trinity-%{tde_pkg}
 Summary:		Educational/Edutainment applications
 Group:			System/GUI/Other
 Version:		%{tde_version}
-Release:		%{?!preversion:1}%{?preversion:0_%{preversion}}%{?dist}
+Release:		%{?!preversion:%{pkg_rel}}%{?preversion:0_%{preversion}}%{?dist}
 URL:			http://www.trinitydesktop.org/
 
-%if 0%{?suse_version}
-License:	GPL-2.0+
-%else
 License:	GPLv2+
-%endif
 
 #Vendor:		Trinity Desktop
 #Packager:	Francois Andriot <francois.andriot@free.fr>
@@ -59,26 +54,34 @@ Prefix:			%{tde_prefix}
 Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{tde_version}/main/core/%{tarball_name}-%{version}%{?preversion:~%{preversion}}.tar.xz
 Source1:		%{name}-rpmlintrc
 
-BuildRequires:  cmake make
+BuildSystem:    cmake
+BuildOption:    -DCMAKE_BUILD_TYPE="RelWithDebInfo"
+BuildOption:    -DCMAKE_SKIP_RPATH=OFF
+BuildOption:    -DCMAKE_SKIP_INSTALL_RPATH=OFF
+BuildOption:    -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
+BuildOption:    -DCMAKE_INSTALL_RPATH="%{tde_libdir}"
+BuildOption:    -DCMAKE_NO_BUILTIN_CHRPATH=ON
+BuildOption:    -DWITH_GCC_VISIBILITY=ON
+BuildOption:    -DBIN_INSTALL_DIR="%{tde_bindir}"
+BuildOption:    -DCONFIG_INSTALL_DIR="%{tde_confdir}"
+BuildOption:    -DINCLUDE_INSTALL_DIR="%{tde_tdeincludedir}"
+BuildOption:    -DLIB_INSTALL_DIR="%{tde_libdir}"
+BuildOption:    -DSHARE_INSTALL_PREFIX="%{tde_datadir}"
+BuildOption:    -DCONFIG_INSTALL_DIR="%{tde_confdir}"
+BuildOption:    -DSYSCONF_INSTALL_DIR="%{tde_confdir}"
+BuildOption:    -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus"
+BuildOption:    -DWITH_ALL_OPTIONS=ON -DWITH_OCAML_SOLVER=OFF
+%{?!with_kig:BuildOption:    -DBUILD_KIG=OFF}
+%{?!with_kig:BuildOption:    -DWITH_KIG_PYTHON_SCRIPTING=OFF}
+%{?!with_v4l:BuildOption:    -DWITH_V4L=OFF}
 
 BuildRequires: trinity-tdelibs-devel >= %{tde_version}
 
 BuildRequires:	trinity-tde-cmake >= %{tde_version}
 BuildRequires: desktop-file-utils
 
-# SUSE desktop files utility
-%if 0%{?suse_version}
-BuildRequires:	update-desktop-files
-%endif
+%{!?with_clang:BuildRequires:	gcc-c++}
 
-%if 0%{?opensuse_bs} && 0%{?suse_version}
-# for xdg-menu script
-BuildRequires:	brp-check-trinity
-%endif
-
-%if "%{?toolchain}" != "clang"
-BuildRequires:	gcc-c++
-%endif
 BuildRequires:	fdupes
 BuildRequires:	doxygen
 
@@ -95,13 +98,7 @@ BuildRequires:  pkgconfig(openssl)
 BuildRequires:  pkgconfig(libusb) pkgconfig(libusb-1.0)
 
 # PYTHON3 support
-%if 0%{?rhel} >= 7 || 0%{?fedora} >= 31 || 0%{?suse_version} >= 1550 || 0%{?sle_version} >= 150100 || 0%{?mgaversion} >= 8
-%global python python3
-%global __python %__python3
-%global python_sitearch %{python3_sitearch}
-%else
 %global python python
-%endif
 %{!?python_sitearch:%global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
 BuildRequires:	%{python}
 BuildRequires:	%{python}-devel
@@ -111,23 +108,7 @@ BuildRequires:	boost-devel
 BuildRequires:  cmake(boost_python)
 
 # OCAML support
-%if 0%{?rhel} >= 6 || 0%{?fedora} >= 15
-BuildRequires: ocaml(compiler)
-#BuildRequires: ocaml-facile-devel
-%else
 BuildRequires: ocaml
-#BuildRequires: ocaml-facile-devel
-%endif
-
-# KIG python scripting support
-%if 0%{?rhel} != 5
-%define with_kig 1
-%endif
-
-# V4L support
-%if 0%{?rhel} != 5
-%define with_v4l 1
-%endif
 
 BuildRequires:  pkgconfig(xrender)
 BuildRequires:  pkgconfig(x11)
@@ -150,7 +131,7 @@ Requires: trinity-keduca = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: trinity-kgeography = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: trinity-kgeography-data = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: trinity-khangman = %{?epoch:%{epoch}:}%{version}-%{release}
-%if 0%{?with_kig}
+%if %{with kig}
 Requires: trinity-kig = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 Requires: trinity-kiten = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -180,7 +161,7 @@ Educational/Edutainment applications, including:
 * keduca: Tests and Exams
 * kgeography: Geography Trainer
 * khangman: Hangman Game
-%if 0%{?with_kig}
+%if %{with kig}
 * kig: Interactive Geometry
 %endif
 * kiten: Japanese Reference/Study Tool
@@ -478,7 +459,7 @@ This package is part of Trinity, as a component of the TDE education module.
 
 ##########
 
-%if 0%{?with_kig}
+%if %{with kig}
 %package -n trinity-kig
 Summary:	Interactive geometry program for TDE
 Group:		System/GUI/Other
@@ -517,9 +498,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %{tde_tdelibdir}/libkigpart.la
 %{tde_tdelibdir}/libkigpart.so
 %{tde_tdeappdir}/kig.desktop
-%if 0%{?with_kig}
 %{tde_datadir}/apps/katepart/syntax/python-kig.xml
-%endif
 %{tde_datadir}/apps/kig/
 %{tde_datadir}/icons/crystalsvg/*/mimetypes/kig_doc.png
 %{tde_datadir}/icons/crystalsvg/scalable/mimetypes/kig_doc.svgz
@@ -1082,7 +1061,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %{tde_bindir}/sbigccd
 %{tde_bindir}/skycommander
 %{tde_bindir}/temma
-%if 0%{?with_v4l}
+%if %{with v4l}
 %{tde_bindir}/meade_lpi
 %{tde_bindir}/v4ldriver
 %{tde_bindir}/v4lphilips
@@ -1119,91 +1098,13 @@ This package contains the development files for tdeedu.
 %{tde_libdir}/libkvoctraincore.la
 %{tde_libdir}/libkvoctraincore.so
 
-##########
 
-%if 0%{?suse_version} && 0%{?opensuse_bs} == 0
-%debug_package
-%endif
-
-##########
-
-
-%prep
-%autosetup -n %{tarball_name}-%{version}%{?preversion:~%{preversion}}
-
-%if 0%{?fedora} >= 30 || 0%{?rhel} >= 8 || 0%{?mgaversion} >= 8
-# Fix shebangs
-sed -i "kig/pykig/pykig.py" \
-    -e "s|env python|env %{python}|"
-%endif
-
-
-%build
+%conf -p
 export PATH="%{tde_bindir}:${PATH}"
 export PKG_CONFIG_PATH="%{tde_libdir}/pkgconfig:${PKG_CONFIG_PATH}"
 
-if ! rpm -E %%cmake|grep -e 'cd build\|cd ${CMAKE_BUILD_DIR:-build}'; then
-  %__mkdir_p build
-  cd build
-fi
 
-%cmake \
-  -DCMAKE_BUILD_TYPE="RelWithDebInfo" \
-  -DCMAKE_C_FLAGS="${RPM_OPT_FLAGS}" \
-  -DCMAKE_CXX_FLAGS="${RPM_OPT_FLAGS}" \
-  -DCMAKE_SKIP_RPATH=OFF \
-  -DCMAKE_SKIP_INSTALL_RPATH=OFF \
-  -DCMAKE_INSTALL_RPATH="%{tde_libdir}" \
-  -DCMAKE_NO_BUILTIN_CHRPATH=ON \
-  -DCMAKE_VERBOSE_MAKEFILE=ON \
-  -DWITH_GCC_VISIBILITY=ON \
-  \
-  -DBIN_INSTALL_DIR="%{tde_bindir}" \
-  -DCONFIG_INSTALL_DIR="%{tde_confdir}" \
-  -DINCLUDE_INSTALL_DIR="%{tde_tdeincludedir}" \
-  -DLIB_INSTALL_DIR="%{tde_libdir}" \
-  -DSHARE_INSTALL_PREFIX="%{tde_datadir}" \
-  -DCONFIG_INSTALL_DIR="%{tde_confdir}" \
-  -DSYSCONF_INSTALL_DIR="%{tde_confdir}" \
-  -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus" \
-  \
-  -DWITH_ALL_OPTIONS=ON \
-  %{?!with_kig:-DBUILD_KIG=OFF} \
-  -DWITH_OCAML_SOLVER=OFF \
-  %{?!with_kig:-DWITH_KIG_PYTHON_SCRIPTING=OFF} \
-  %{?!with_v4l:-DWITH_V4L=OFF} \
-  ..
-
-%__make %{?_smp_mflags} || %__make
-
-
-%install
-export PATH="%{tde_bindir}:${PATH}"
-%__make install DESTDIR=%{buildroot} -C build
-
-# Updates applications categories for openSUSE
-%if 0%{?suse_version}
-%suse_update_desktop_file -r khangman      Education Languages Game KidsGame
-%suse_update_desktop_file    kiten         Education Languages
-%suse_update_desktop_file    klatin        Education Languages
-%suse_update_desktop_file    klettres      Education Languages
-%suse_update_desktop_file    kverbos       Education Languages
-%suse_update_desktop_file    kvoctrain     Education Languages
-%suse_update_desktop_file    kwordquiz     Education Languages
-%suse_update_desktop_file    kbruch        Education Math
-%suse_update_desktop_file    kig           Education Math
-%suse_update_desktop_file    kmplot        Education Math
-%suse_update_desktop_file    kturtle       Education Math
-%suse_update_desktop_file    kpercentage   Education Math
-%suse_update_desktop_file    kalzium       Education Chemistry
-%suse_update_desktop_file    kstars        Education Astronomy
-%suse_update_desktop_file    keduca        Education Teaching
-%suse_update_desktop_file    keducabuilder Education Teaching
-%suse_update_desktop_file    ktouch        Education Teaching
-%suse_update_desktop_file -r blinken       Education Teaching Game KidsGame
-%suse_update_desktop_file    kgeography    Education Teaching
-%suse_update_desktop_file -r kanagram      Education Languages Game KidsGame
-%endif
+%install -a
 
 # Links duplicate files
 %fdupes "%{?buildroot}%{tde_datadir}"

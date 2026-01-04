@@ -15,17 +15,7 @@
 
 %define tde_pkg tdeedu
 %define tde_prefix /opt/trinity
-%define tde_bindir %{tde_prefix}/bin
-%define tde_confdir %{_sysconfdir}/trinity
-%define tde_datadir %{tde_prefix}/share
-%define tde_docdir %{tde_datadir}/doc
-%define tde_includedir %{tde_prefix}/include
-%define tde_libdir %{tde_prefix}/%{_lib}
-%define tde_mandir %{tde_datadir}/man
-%define tde_tdeappdir %{tde_datadir}/applications/tde
-%define tde_tdedocdir %{tde_docdir}/tde
-%define tde_tdeincludedir %{tde_includedir}/tde
-%define tde_tdelibdir %{tde_libdir}/trinity
+
 
 %undefine __brp_remove_la_files
 %define dont_remove_libtool_files 1
@@ -46,34 +36,22 @@ URL:			http://www.trinitydesktop.org/
 
 License:	GPLv2+
 
-#Vendor:		Trinity Desktop
-#Packager:	Francois Andriot <francois.andriot@free.fr>
-
-Prefix:			%{tde_prefix}
 
 Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{tde_version}/main/core/%{tarball_name}-%{version}%{?preversion:~%{preversion}}.tar.xz
 Source1:		%{name}-rpmlintrc
 
 BuildSystem:    cmake
+
 BuildOption:    -DCMAKE_BUILD_TYPE="RelWithDebInfo"
-BuildOption:    -DCMAKE_SKIP_RPATH=OFF
-BuildOption:    -DCMAKE_SKIP_INSTALL_RPATH=OFF
-BuildOption:    -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON
-BuildOption:    -DCMAKE_INSTALL_RPATH="%{tde_libdir}"
-BuildOption:    -DCMAKE_NO_BUILTIN_CHRPATH=ON
-BuildOption:    -DWITH_GCC_VISIBILITY=ON
-BuildOption:    -DBIN_INSTALL_DIR="%{tde_bindir}"
-BuildOption:    -DCONFIG_INSTALL_DIR="%{tde_confdir}"
-BuildOption:    -DINCLUDE_INSTALL_DIR="%{tde_tdeincludedir}"
-BuildOption:    -DLIB_INSTALL_DIR="%{tde_libdir}"
-BuildOption:    -DSHARE_INSTALL_PREFIX="%{tde_datadir}"
-BuildOption:    -DCONFIG_INSTALL_DIR="%{tde_confdir}"
-BuildOption:    -DSYSCONF_INSTALL_DIR="%{tde_confdir}"
-BuildOption:    -DXDG_MENU_INSTALL_DIR="%{_sysconfdir}/xdg/menus"
+BuildOption:    -DCONFIG_INSTALL_DIR=%{_sysconfdir}/trinity
+BuildOption:    -DCMAKE_INSTALL_PREFIX=%{tde_prefix}
+BuildOption:    -DINCLUDE_INSTALL_DIR=%{tde_prefix}/include/tde
+BuildOption:    -DXDG_MENU_INSTALL_DIR=%{_sysconfdir}/xdg/menus
 BuildOption:    -DWITH_ALL_OPTIONS=ON -DWITH_OCAML_SOLVER=OFF
-%{?!with_kig:BuildOption:    -DBUILD_KIG=OFF}
-%{?!with_kig:BuildOption:    -DWITH_KIG_PYTHON_SCRIPTING=OFF}
-%{?!with_v4l:BuildOption:    -DWITH_V4L=OFF}
+BuildOption:    -DWITH_GCC_VISIBILITY=%{!?with_clang:ON}%{?with_clang:OFF}
+BuildOption:    -DBUILD_KIG=%{?!with_kig:OFF}%{?with_kig:ON}
+BuildOption:    -DWITH_KIG_PYTHON_SCRIPTING=%{?!with_kig:OFF}%{?with_kig:ON}
+BuildOption:    -DWITH_V4L=%{?!with_v4l:OFF}%{?with_v4l:ON}
 
 BuildRequires: trinity-tdelibs-devel >= %{tde_version}
 
@@ -195,11 +173,11 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files data
 %defattr(-,root,root,-)
-%{tde_datadir}/applnk/Edutainment/Languages/.directory
-%{tde_datadir}/applnk/Edutainment/Miscellaneous/.directory
-%{tde_datadir}/applnk/Edutainment/Mathematics/.directory
-%{tde_datadir}/applnk/Edutainment/Science/.directory
-%{tde_datadir}/applnk/Edutainment/Tools/.directory
+%{tde_prefix}/share/applnk/Edutainment/Languages/.directory
+%{tde_prefix}/share/applnk/Edutainment/Miscellaneous/.directory
+%{tde_prefix}/share/applnk/Edutainment/Mathematics/.directory
+%{tde_prefix}/share/applnk/Edutainment/Science/.directory
+%{tde_prefix}/share/applnk/Edutainment/Tools/.directory
 
 ##########
 
@@ -222,14 +200,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-blinken
 %defattr(-,root,root,-)
-%{tde_bindir}/blinken
-%{tde_tdeappdir}/blinken.desktop
-%{tde_datadir}/apps/blinken/
-%{tde_datadir}/config.kcfg/blinken.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/blinken.png
-%{tde_datadir}/icons/hicolor/scalable/apps/blinken.svgz
-%{tde_tdedocdir}/HTML/en/blinken/
-%{tde_mandir}/man1/blinken*
+%{tde_prefix}/bin/blinken
+%{tde_prefix}/share/applications/tde/blinken.desktop
+%{tde_prefix}/share/apps/blinken/
+%{tde_prefix}/share/config.kcfg/blinken.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/blinken.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/blinken.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/blinken/
+%{tde_prefix}/share/man/man1/blinken*
 
 ##########
 
@@ -260,13 +238,13 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kalzium
 %defattr(-,root,root,-)
-%{tde_bindir}/kalzium
-%{tde_tdeappdir}/kalzium.desktop
-%{tde_datadir}/config.kcfg/kalzium.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kalzium.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kalzium.svgz
-%{tde_tdedocdir}/HTML/en/kalzium/
-%{tde_mandir}/man1/kalzium*
+%{tde_prefix}/bin/kalzium
+%{tde_prefix}/share/applications/tde/kalzium.desktop
+%{tde_prefix}/share/config.kcfg/kalzium.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kalzium.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kalzium.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/kalzium/
+%{tde_prefix}/share/man/man1/kalzium*
 
 ##########
 
@@ -286,7 +264,7 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kalzium-data
 %defattr(-,root,root,-)
-%{tde_datadir}/apps/kalzium/
+%{tde_prefix}/share/apps/kalzium/
 
 ##########
 
@@ -312,14 +290,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kanagram
 %defattr(-,root,root,-)
-%{tde_bindir}/kanagram
-%{tde_tdeappdir}/kanagram.desktop
-%{tde_datadir}/apps/kanagram/
-%{tde_datadir}/config.kcfg/kanagram.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kanagram.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kanagram.svgz
-%{tde_tdedocdir}/HTML/en/kanagram/
-%{tde_mandir}/man1/kanagram*
+%{tde_prefix}/bin/kanagram
+%{tde_prefix}/share/applications/tde/kanagram.desktop
+%{tde_prefix}/share/apps/kanagram/
+%{tde_prefix}/share/config.kcfg/kanagram.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kanagram.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kanagram.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/kanagram/
+%{tde_prefix}/share/man/man1/kanagram*
 
 ##########
 
@@ -337,15 +315,15 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kbruch
 %defattr(-,root,root,-)
-%{tde_bindir}/kbruch
-%{tde_datadir}/apps/kbruch/
-%{tde_tdeappdir}/kbruch.desktop
-%{tde_datadir}/config.kcfg/kbruch.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kbruch.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kbruch.svgz
-%{tde_datadir}/icons/crystalsvg/*/actions/kbruch_*.png
-%{tde_tdedocdir}/HTML/en/kbruch/
-%{tde_mandir}/man1/kbruch*
+%{tde_prefix}/bin/kbruch
+%{tde_prefix}/share/apps/kbruch/
+%{tde_prefix}/share/applications/tde/kbruch.desktop
+%{tde_prefix}/share/config.kcfg/kbruch.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kbruch.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kbruch.svgz
+%{tde_prefix}/share/icons/crystalsvg/*/actions/kbruch_*.png
+%{tde_prefix}/share/doc/tde/HTML/en/kbruch/
+%{tde_prefix}/share/man/man1/kbruch*
 
 ##########
 
@@ -362,21 +340,21 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-keduca
 %defattr(-,root,root,-)
-%{tde_bindir}/keduca
-%{tde_bindir}/keducabuilder
-%{tde_bindir}/keduca-shrinker
-%{tde_tdelibdir}/libkeducapart.la
-%{tde_tdelibdir}/libkeducapart.so
-%{tde_tdeappdir}/keduca.desktop
-%{tde_tdeappdir}/keducabuilder.desktop
-%{tde_datadir}/apps/keduca/
-%{tde_datadir}/config.kcfg/keduca.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/keduca.png
-%{tde_datadir}/mimelnk/application/x-edu.desktop
-%{tde_datadir}/mimelnk/application/x-edugallery.desktop
-%{tde_datadir}/services/keduca_part.desktop
-%{tde_tdedocdir}/HTML/en/keduca/
-%{tde_mandir}/man1/keduca*
+%{tde_prefix}/bin/keduca
+%{tde_prefix}/bin/keducabuilder
+%{tde_prefix}/bin/keduca-shrinker
+%{tde_prefix}/%{_lib}/trinity/libkeducapart.la
+%{tde_prefix}/%{_lib}/trinity/libkeducapart.so
+%{tde_prefix}/share/applications/tde/keduca.desktop
+%{tde_prefix}/share/applications/tde/keducabuilder.desktop
+%{tde_prefix}/share/apps/keduca/
+%{tde_prefix}/share/config.kcfg/keduca.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/keduca.png
+%{tde_prefix}/share/mimelnk/application/x-edu.desktop
+%{tde_prefix}/share/mimelnk/application/x-edugallery.desktop
+%{tde_prefix}/share/services/keduca_part.desktop
+%{tde_prefix}/share/doc/tde/HTML/en/keduca/
+%{tde_prefix}/share/man/man1/keduca*
 
 ##########
 
@@ -396,15 +374,15 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kgeography
 %defattr(-,root,root,-)
-%{tde_bindir}/kgeography
-%{tde_bindir}/kgeography_gen_map.pl
-%{tde_tdeappdir}/kgeography.desktop
-%{tde_datadir}/config.kcfg/kgeography.kcfg
-%{tde_datadir}/icons/crystalsvg/*/apps/kgeography.png
-%{tde_datadir}/icons/crystalsvg/scalable/apps/kgeography.svgz
-%{tde_datadir}/icons/hicolor/*/apps/kgeography.png
-%{tde_tdedocdir}/HTML/en/kgeography
-%{tde_mandir}/man1/kgeography*
+%{tde_prefix}/bin/kgeography
+%{tde_prefix}/bin/kgeography_gen_map.pl
+%{tde_prefix}/share/applications/tde/kgeography.desktop
+%{tde_prefix}/share/config.kcfg/kgeography.kcfg
+%{tde_prefix}/share/icons/crystalsvg/*/apps/kgeography.png
+%{tde_prefix}/share/icons/crystalsvg/scalable/apps/kgeography.svgz
+%{tde_prefix}/share/icons/hicolor/*/apps/kgeography.png
+%{tde_prefix}/share/doc/tde/HTML/en/kgeography
+%{tde_prefix}/share/man/man1/kgeography*
 
 ##########
 
@@ -423,7 +401,7 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kgeography-data
 %defattr(-,root,root,-)
-%{tde_datadir}/apps/kgeography/
+%{tde_prefix}/share/apps/kgeography/
 
 ##########
 
@@ -447,15 +425,15 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-khangman
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/khangmanrc
-%{tde_bindir}/khangman
-%{tde_tdeappdir}/khangman.desktop
-%{tde_datadir}/apps/khangman/
-%{tde_datadir}/config.kcfg/khangman.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/khangman.png
-%{tde_datadir}/icons/hicolor/scalable/apps/khangman.svgz
-%{tde_tdedocdir}/HTML/en/khangman/
-%{tde_mandir}/man1/khangman*
+%config(noreplace) %{_sysconfdir}/trinity/khangmanrc
+%{tde_prefix}/bin/khangman
+%{tde_prefix}/share/applications/tde/khangman.desktop
+%{tde_prefix}/share/apps/khangman/
+%{tde_prefix}/share/config.kcfg/khangman.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/khangman.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/khangman.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/khangman/
+%{tde_prefix}/share/man/man1/khangman*
 
 ##########
 
@@ -487,35 +465,35 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kig
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/magic/cabri.magic
-%config(noreplace) %{tde_confdir}/magic/drgeo.magic
-%{tde_bindir}/kig
-%{tde_bindir}/pykig.py*
-%{tde_tdelibdir}/tdefile_drgeo.la
-%{tde_tdelibdir}/tdefile_drgeo.so
-%{tde_tdelibdir}/tdefile_kig.la
-%{tde_tdelibdir}/tdefile_kig.so
-%{tde_tdelibdir}/libkigpart.la
-%{tde_tdelibdir}/libkigpart.so
-%{tde_tdeappdir}/kig.desktop
-%{tde_datadir}/apps/katepart/syntax/python-kig.xml
-%{tde_datadir}/apps/kig/
-%{tde_datadir}/icons/crystalsvg/*/mimetypes/kig_doc.png
-%{tde_datadir}/icons/crystalsvg/scalable/mimetypes/kig_doc.svgz
-%{tde_datadir}/icons/hicolor/*/apps/kig.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kig.svgz
-%{tde_datadir}/mimelnk/application/x-cabri.desktop
-%{tde_datadir}/mimelnk/application/x-drgeo.desktop
-%{tde_datadir}/mimelnk/application/x-kig.desktop
-%{tde_datadir}/mimelnk/application/x-kgeo.desktop
-%{tde_datadir}/mimelnk/application/x-kseg.desktop
-%{tde_datadir}/services/tdefile_drgeo.desktop
-%{tde_datadir}/services/tdefile_kig.desktop
-%{tde_datadir}/services/kig_part.desktop
-%{tde_tdedocdir}/HTML/en/kig/
-%config(noreplace) %{tde_confdir}/magic/cabri.magic.mgc
-%config(noreplace) %{tde_confdir}/magic/drgeo.magic.mgc
-%{tde_mandir}/man1/kig*
+%config(noreplace) %{_sysconfdir}/trinity/magic/cabri.magic
+%config(noreplace) %{_sysconfdir}/trinity/magic/drgeo.magic
+%{tde_prefix}/bin/kig
+%{tde_prefix}/bin/pykig.py*
+%{tde_prefix}/%{_lib}/trinity/tdefile_drgeo.la
+%{tde_prefix}/%{_lib}/trinity/tdefile_drgeo.so
+%{tde_prefix}/%{_lib}/trinity/tdefile_kig.la
+%{tde_prefix}/%{_lib}/trinity/tdefile_kig.so
+%{tde_prefix}/%{_lib}/trinity/libkigpart.la
+%{tde_prefix}/%{_lib}/trinity/libkigpart.so
+%{tde_prefix}/share/applications/tde/kig.desktop
+%{tde_prefix}/share/apps/katepart/syntax/python-kig.xml
+%{tde_prefix}/share/apps/kig/
+%{tde_prefix}/share/icons/crystalsvg/*/mimetypes/kig_doc.png
+%{tde_prefix}/share/icons/crystalsvg/scalable/mimetypes/kig_doc.svgz
+%{tde_prefix}/share/icons/hicolor/*/apps/kig.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kig.svgz
+%{tde_prefix}/share/mimelnk/application/x-cabri.desktop
+%{tde_prefix}/share/mimelnk/application/x-drgeo.desktop
+%{tde_prefix}/share/mimelnk/application/x-kig.desktop
+%{tde_prefix}/share/mimelnk/application/x-kgeo.desktop
+%{tde_prefix}/share/mimelnk/application/x-kseg.desktop
+%{tde_prefix}/share/services/tdefile_drgeo.desktop
+%{tde_prefix}/share/services/tdefile_kig.desktop
+%{tde_prefix}/share/services/kig_part.desktop
+%{tde_prefix}/share/doc/tde/HTML/en/kig/
+%config(noreplace) %{_sysconfdir}/trinity/magic/cabri.magic.mgc
+%config(noreplace) %{_sysconfdir}/trinity/magic/drgeo.magic.mgc
+%{tde_prefix}/share/man/man1/kig*
 %endif
 
 ##########
@@ -537,13 +515,13 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kiten
 %defattr(-,root,root,-)
-%{tde_bindir}/kiten
-%{tde_bindir}/kitengen
-%{tde_tdeappdir}/kiten.desktop
-%{tde_tdedocdir}/HTML/en/kiten/
-%{tde_datadir}/icons/hicolor/*/apps/kiten.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kiten.svgz
-%{tde_mandir}/man1/kiten*
+%{tde_prefix}/bin/kiten
+%{tde_prefix}/bin/kitengen
+%{tde_prefix}/share/applications/tde/kiten.desktop
+%{tde_prefix}/share/doc/tde/HTML/en/kiten/
+%{tde_prefix}/share/icons/hicolor/*/apps/kiten.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kiten.svgz
+%{tde_prefix}/share/man/man1/kiten*
 
 ##########
 
@@ -571,14 +549,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-klatin
 %defattr(-,root,root,-)
-%{tde_bindir}/klatin
-%{tde_tdeappdir}/klatin.desktop
-%{tde_datadir}/apps/klatin/
-%{tde_datadir}/config.kcfg/klatin.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/klatin.png
-%{tde_datadir}/icons/hicolor/scalable/apps/klatin.svgz
-%{tde_tdedocdir}/HTML/en/klatin/
-%{tde_mandir}/man1/klatin*
+%{tde_prefix}/bin/klatin
+%{tde_prefix}/share/applications/tde/klatin.desktop
+%{tde_prefix}/share/apps/klatin/
+%{tde_prefix}/share/config.kcfg/klatin.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/klatin.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/klatin.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/klatin/
+%{tde_prefix}/share/man/man1/klatin*
 
 ##########
 
@@ -601,14 +579,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-klettres
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/klettresrc
-%{tde_bindir}/klettres
-%{tde_tdeappdir}/klettres.desktop
-%{tde_datadir}/config.kcfg/klettres.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/klettres.png
-%{tde_datadir}/icons/hicolor/scalable/apps/klettres.svgz
-%{tde_tdedocdir}/HTML/en/klettres/
-%{tde_mandir}/man1/klettres*
+%config(noreplace) %{_sysconfdir}/trinity/klettresrc
+%{tde_prefix}/bin/klettres
+%{tde_prefix}/share/applications/tde/klettres.desktop
+%{tde_prefix}/share/config.kcfg/klettres.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/klettres.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/klettres.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/klettres/
+%{tde_prefix}/share/man/man1/klettres*
 
 ##########
 
@@ -627,7 +605,7 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-klettres-data
 %defattr(-,root,root,-)
-%{tde_datadir}/apps/klettres/
+%{tde_prefix}/share/apps/klettres/
 
 ##########
 
@@ -654,18 +632,18 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kmplot
 %defattr(-,root,root,-)
-%{tde_bindir}/kmplot
-%{tde_tdelibdir}/libkmplotpart.la
-%{tde_tdelibdir}/libkmplotpart.so
-%{tde_tdeappdir}/kmplot.desktop
-%{tde_datadir}/apps/kmplot/
-%{tde_datadir}/config.kcfg/kmplot.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kmplot.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kmplot.svgz
-%{tde_datadir}/mimelnk/application/x-kmplot.desktop
-%{tde_datadir}/services/kmplot_part.desktop
-%{tde_tdedocdir}/HTML/en/kmplot/
-%{tde_mandir}/man1/kmplot*
+%{tde_prefix}/bin/kmplot
+%{tde_prefix}/%{_lib}/trinity/libkmplotpart.la
+%{tde_prefix}/%{_lib}/trinity/libkmplotpart.so
+%{tde_prefix}/share/applications/tde/kmplot.desktop
+%{tde_prefix}/share/apps/kmplot/
+%{tde_prefix}/share/config.kcfg/kmplot.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kmplot.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kmplot.svgz
+%{tde_prefix}/share/mimelnk/application/x-kmplot.desktop
+%{tde_prefix}/share/services/kmplot_part.desktop
+%{tde_prefix}/share/doc/tde/HTML/en/kmplot/
+%{tde_prefix}/share/man/man1/kmplot*
 
 ##########
 
@@ -686,13 +664,13 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kpercentage
 %defattr(-,root,root,-)
-%{tde_bindir}/kpercentage
-%{tde_tdeappdir}/kpercentage.desktop
-%{tde_datadir}/apps/kpercentage/
-%{tde_datadir}/icons/hicolor/*/apps/kpercentage.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kpercentage.svgz
-%{tde_tdedocdir}/HTML/en/kpercentage/
-%{tde_mandir}/man1/kpercentage*
+%{tde_prefix}/bin/kpercentage
+%{tde_prefix}/share/applications/tde/kpercentage.desktop
+%{tde_prefix}/share/apps/kpercentage/
+%{tde_prefix}/share/icons/hicolor/*/apps/kpercentage.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kpercentage.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/kpercentage/
+%{tde_prefix}/share/man/man1/kpercentage*
 
 ##########
 
@@ -720,14 +698,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kstars
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/kstarsrc
-%{tde_bindir}/kstars
-%{tde_tdeappdir}/kstars.desktop
-%{tde_datadir}/config.kcfg/kstars.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kstars.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kstars.svgz
-%{tde_tdedocdir}/HTML/en/kstars/
-%{tde_mandir}/man1/kstars*
+%config(noreplace) %{_sysconfdir}/trinity/kstarsrc
+%{tde_prefix}/bin/kstars
+%{tde_prefix}/share/applications/tde/kstars.desktop
+%{tde_prefix}/share/config.kcfg/kstars.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kstars.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kstars.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/kstars/
+%{tde_prefix}/share/man/man1/kstars*
 
 ##########
 
@@ -746,7 +724,7 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kstars-data
 %defattr(-,root,root,-)
-%{tde_datadir}/apps/kstars/
+%{tde_prefix}/share/apps/kstars/
 
 ##########
 
@@ -769,14 +747,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-ktouch
 %defattr(-,root,root,-)
-%{tde_bindir}/ktouch
-%{tde_tdeappdir}/ktouch.desktop
-%{tde_datadir}/apps/ktouch/
-%{tde_datadir}/config.kcfg/ktouch.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/ktouch.png
-%{tde_datadir}/icons/hicolor/scalable/apps/ktouch.svgz
-%{tde_tdedocdir}/HTML/en/ktouch/
-%{tde_mandir}/man1/ktouch*
+%{tde_prefix}/bin/ktouch
+%{tde_prefix}/share/applications/tde/ktouch.desktop
+%{tde_prefix}/share/apps/ktouch/
+%{tde_prefix}/share/config.kcfg/ktouch.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/ktouch.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/ktouch.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/ktouch/
+%{tde_prefix}/share/man/man1/ktouch*
 
 ##########
 
@@ -807,14 +785,14 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kturtle
 %defattr(-,root,root,-)
-%{tde_bindir}/kturtle
-%{tde_tdeappdir}/kturtle.desktop
-%{tde_datadir}/apps/katepart/syntax/logohighlightstyle*
-%{tde_datadir}/apps/kturtle/
-%{tde_datadir}/config.kcfg/kturtle.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kturtle.png
-%{tde_tdedocdir}/HTML/en/kturtle/
-%{tde_mandir}/man1/kturtle*
+%{tde_prefix}/bin/kturtle
+%{tde_prefix}/share/applications/tde/kturtle.desktop
+%{tde_prefix}/share/apps/katepart/syntax/logohighlightstyle*
+%{tde_prefix}/share/apps/kturtle/
+%{tde_prefix}/share/config.kcfg/kturtle.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kturtle.png
+%{tde_prefix}/share/doc/tde/HTML/en/kturtle/
+%{tde_prefix}/share/man/man1/kturtle*
 
 ##########
 
@@ -836,15 +814,15 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kverbos
 %defattr(-,root,root,-)
-%{tde_bindir}/kverbos
-%{tde_tdeappdir}/kverbos.desktop
-%{tde_datadir}/apps/kverbos/
-%{tde_datadir}/config.kcfg/kverbos.kcfg
-%{tde_datadir}/icons/crystalsvg/16x16/actions/kverbosuser.png
-%{tde_datadir}/icons/hicolor/*/apps/kverbos.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kverbos.svgz
-%{tde_tdedocdir}/HTML/en/kverbos/
-%{tde_mandir}/man1/kverbos*
+%{tde_prefix}/bin/kverbos
+%{tde_prefix}/share/applications/tde/kverbos.desktop
+%{tde_prefix}/share/apps/kverbos/
+%{tde_prefix}/share/config.kcfg/kverbos.kcfg
+%{tde_prefix}/share/icons/crystalsvg/16x16/actions/kverbosuser.png
+%{tde_prefix}/share/icons/hicolor/*/apps/kverbos.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kverbos.svgz
+%{tde_prefix}/share/doc/tde/HTML/en/kverbos/
+%{tde_prefix}/share/man/man1/kverbos*
 
 ##########
 
@@ -875,20 +853,20 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kvoctrain
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/kvoctrainrc
-%{tde_bindir}/kvoctrain
-%{tde_bindir}/spotlight2kvtml
-%{tde_libdir}/libkvoctraincore.so.*
-%{tde_tdeappdir}/kvoctrain.desktop
-%{tde_datadir}/apps/kvoctrain/
-%{tde_datadir}/mimelnk/text/x-kvtml.desktop
-%{tde_datadir}/config.kcfg/kvoctrain.kcfg
-%{tde_datadir}/config.kcfg/languagesettings.kcfg
-%{tde_datadir}/config.kcfg/presettings.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kvoctrain.png
-%{tde_tdedocdir}/HTML/en/kvoctrain/
-%{tde_mandir}/man1/kvoctrain*
-%{tde_mandir}/man1/spotlight2kvtml*
+%config(noreplace) %{_sysconfdir}/trinity/kvoctrainrc
+%{tde_prefix}/bin/kvoctrain
+%{tde_prefix}/bin/spotlight2kvtml
+%{tde_prefix}/%{_lib}/libkvoctraincore.so.*
+%{tde_prefix}/share/applications/tde/kvoctrain.desktop
+%{tde_prefix}/share/apps/kvoctrain/
+%{tde_prefix}/share/mimelnk/text/x-kvtml.desktop
+%{tde_prefix}/share/config.kcfg/kvoctrain.kcfg
+%{tde_prefix}/share/config.kcfg/languagesettings.kcfg
+%{tde_prefix}/share/config.kcfg/presettings.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kvoctrain.png
+%{tde_prefix}/share/doc/tde/HTML/en/kvoctrain/
+%{tde_prefix}/share/man/man1/kvoctrain*
+%{tde_prefix}/share/man/man1/spotlight2kvtml*
 
 ##########
 
@@ -910,19 +888,19 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-kwordquiz
 %defattr(-,root,root,-)
-%config(noreplace) %{tde_confdir}/kwordquizrc
-%{tde_bindir}/kwordquiz
-%{tde_tdeappdir}/kwordquiz.desktop
-%{tde_datadir}/apps/kwordquiz/
-%{tde_datadir}/config.kcfg/kwordquiz.kcfg
-%{tde_datadir}/icons/hicolor/*/apps/kwordquiz.png
-%{tde_datadir}/icons/hicolor/scalable/apps/kwordquiz.svg
-%{tde_datadir}/icons/crystalsvg/*/mimetypes/kwordquiz_doc.png
-%{tde_datadir}/icons/crystalsvg/scalable/mimetypes/kwordquiz_doc.svg
-%{tde_datadir}/mimelnk/application/x-kwordquiz.desktop
-%{tde_tdedocdir}/HTML/en/kwordquiz/
-%{tde_mandir}/man1/kwordquiz*
-%{tde_mandir}/man1/langen*
+%config(noreplace) %{_sysconfdir}/trinity/kwordquizrc
+%{tde_prefix}/bin/kwordquiz
+%{tde_prefix}/share/applications/tde/kwordquiz.desktop
+%{tde_prefix}/share/apps/kwordquiz/
+%{tde_prefix}/share/config.kcfg/kwordquiz.kcfg
+%{tde_prefix}/share/icons/hicolor/*/apps/kwordquiz.png
+%{tde_prefix}/share/icons/hicolor/scalable/apps/kwordquiz.svg
+%{tde_prefix}/share/icons/crystalsvg/*/mimetypes/kwordquiz_doc.png
+%{tde_prefix}/share/icons/crystalsvg/scalable/mimetypes/kwordquiz_doc.svg
+%{tde_prefix}/share/mimelnk/application/x-kwordquiz.desktop
+%{tde_prefix}/share/doc/tde/HTML/en/kwordquiz/
+%{tde_prefix}/share/man/man1/kwordquiz*
+%{tde_prefix}/share/man/man1/langen*
 
 ##########
 
@@ -939,10 +917,10 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-libtdeedu3
 %defattr(-,root,root,-)
-%{tde_libdir}/libextdate.so.*
-%{tde_libdir}/libtdeeducore.so.*
-%{tde_libdir}/libtdeeduplot.so.*
-%{tde_libdir}/libtdeeduui.so.*
+%{tde_prefix}/%{_lib}/libextdate.so.*
+%{tde_prefix}/%{_lib}/libtdeeducore.so.*
+%{tde_prefix}/%{_lib}/libtdeeduplot.so.*
+%{tde_prefix}/%{_lib}/libtdeeduui.so.*
 
 ##########
 
@@ -962,15 +940,15 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-libtdeedu-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/libtdeedu/
-%{tde_libdir}/libextdate.la
-%{tde_libdir}/libextdate.so
-%{tde_libdir}/libtdeeducore.la
-%{tde_libdir}/libtdeeducore.so
-%{tde_libdir}/libtdeeduui.la
-%{tde_libdir}/libtdeeduui.so
-%{tde_libdir}/libtdeeduplot.la
-%{tde_libdir}/libtdeeduplot.so
+%{tde_prefix}/include/tde/libtdeedu/
+%{tde_prefix}/%{_lib}/libextdate.la
+%{tde_prefix}/%{_lib}/libextdate.so
+%{tde_prefix}/%{_lib}/libtdeeducore.la
+%{tde_prefix}/%{_lib}/libtdeeducore.so
+%{tde_prefix}/%{_lib}/libtdeeduui.la
+%{tde_prefix}/%{_lib}/libtdeeduui.so
+%{tde_prefix}/%{_lib}/libtdeeduplot.la
+%{tde_prefix}/%{_lib}/libtdeeduplot.so
 
 ##########
 
@@ -993,15 +971,15 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-libkiten1
 %defattr(-,root,root,-)
-%{tde_libdir}/libkiten.so.*
-%{tde_datadir}/apps/kiten/
-%{tde_datadir}/config.kcfg/kiten.kcfg
-%{tde_datadir}/icons/crystalsvg/16x16/actions/kanjidic.png
-%{tde_datadir}/icons/crystalsvg/22x22/actions/edit_add.png
-%{tde_datadir}/icons/crystalsvg/22x22/actions/edit_remove.png
-%{tde_datadir}/icons/crystalsvg/22x22/actions/kanjidic.png
-%{tde_datadir}/icons/locolor/16x16/actions/edit_add.png
-%{tde_datadir}/icons/locolor/16x16/actions/edit_remove.png
+%{tde_prefix}/%{_lib}/libkiten.so.*
+%{tde_prefix}/share/apps/kiten/
+%{tde_prefix}/share/config.kcfg/kiten.kcfg
+%{tde_prefix}/share/icons/crystalsvg/16x16/actions/kanjidic.png
+%{tde_prefix}/share/icons/crystalsvg/22x22/actions/edit_add.png
+%{tde_prefix}/share/icons/crystalsvg/22x22/actions/edit_remove.png
+%{tde_prefix}/share/icons/crystalsvg/22x22/actions/kanjidic.png
+%{tde_prefix}/share/icons/locolor/16x16/actions/edit_add.png
+%{tde_prefix}/share/icons/locolor/16x16/actions/edit_remove.png
 
 ##########
 
@@ -1024,9 +1002,9 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-libkiten-devel
 %defattr(-,root,root,-)
-%{tde_tdeincludedir}/libkiten/
-%{tde_libdir}/libkiten.la
-%{tde_libdir}/libkiten.so
+%{tde_prefix}/include/tde/libkiten/
+%{tde_prefix}/%{_lib}/libkiten.la
+%{tde_prefix}/%{_lib}/libkiten.so
 
 ##########
 
@@ -1046,32 +1024,32 @@ This package is part of Trinity, as a component of the TDE education module.
 
 %files -n trinity-indi
 %defattr(-,root,root,-)
-%{tde_bindir}/apmount
-%{tde_bindir}/apogee_ppi
-%{tde_bindir}/celestrongps
-%{tde_bindir}/fliccd
-%{tde_bindir}/fliwheel
-%{tde_bindir}/indiserver
-%{tde_bindir}/lx200_16
-%{tde_bindir}/lx200autostar
-%{tde_bindir}/lx200basic
-%{tde_bindir}/lx200classic
-%{tde_bindir}/lx200generic
-%{tde_bindir}/lx200gps
-%{tde_bindir}/sbigccd
-%{tde_bindir}/skycommander
-%{tde_bindir}/temma
+%{tde_prefix}/bin/apmount
+%{tde_prefix}/bin/apogee_ppi
+%{tde_prefix}/bin/celestrongps
+%{tde_prefix}/bin/fliccd
+%{tde_prefix}/bin/fliwheel
+%{tde_prefix}/bin/indiserver
+%{tde_prefix}/bin/lx200_16
+%{tde_prefix}/bin/lx200autostar
+%{tde_prefix}/bin/lx200basic
+%{tde_prefix}/bin/lx200classic
+%{tde_prefix}/bin/lx200generic
+%{tde_prefix}/bin/lx200gps
+%{tde_prefix}/bin/sbigccd
+%{tde_prefix}/bin/skycommander
+%{tde_prefix}/bin/temma
 %if %{with v4l}
-%{tde_bindir}/meade_lpi
-%{tde_bindir}/v4ldriver
-%{tde_bindir}/v4lphilips
+%{tde_prefix}/bin/meade_lpi
+%{tde_prefix}/bin/v4ldriver
+%{tde_prefix}/bin/v4lphilips
 %endif
-%{tde_mandir}/man1/celestrongps*
-%{tde_mandir}/man1/fliccd*
-%{tde_mandir}/man1/indi*
-%{tde_mandir}/man1/lx200*
-%{tde_mandir}/man1/temma*
-%{tde_mandir}/man1/v4l*
+%{tde_prefix}/share/man/man1/celestrongps*
+%{tde_prefix}/share/man/man1/fliccd*
+%{tde_prefix}/share/man/man1/indi*
+%{tde_prefix}/share/man/man1/lx200*
+%{tde_prefix}/share/man/man1/temma*
+%{tde_prefix}/share/man/man1/v4l*
 
 ##########
 
@@ -1092,20 +1070,20 @@ This package contains the development files for tdeedu.
 %defattr(-,root,root,-)
 %doc libtdeedu/AUTHORS libtdeedu/README
 # kstars
-%{tde_tdeincludedir}/kstarsinterface.h
-%{tde_tdeincludedir}/simclockinterface.h
+%{tde_prefix}/include/tde/kstarsinterface.h
+%{tde_prefix}/include/tde/simclockinterface.h
 # kvoctrain
-%{tde_libdir}/libkvoctraincore.la
-%{tde_libdir}/libkvoctraincore.so
+%{tde_prefix}/%{_lib}/libkvoctraincore.la
+%{tde_prefix}/%{_lib}/libkvoctraincore.so
 
 
 %conf -p
-export PATH="%{tde_bindir}:${PATH}"
-export PKG_CONFIG_PATH="%{tde_libdir}/pkgconfig:${PKG_CONFIG_PATH}"
+export PATH="%{tde_prefix}/bin:${PATH}"
+export PKG_CONFIG_PATH="%{tde_prefix}/%{_lib}/pkgconfig:${PKG_CONFIG_PATH}"
 
 
 %install -a
 
 # Links duplicate files
-%fdupes "%{?buildroot}%{tde_datadir}"
+%fdupes "%{?buildroot}%{tde_prefix}/share"
 

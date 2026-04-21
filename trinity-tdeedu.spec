@@ -7,12 +7,6 @@
 #  Having KDE libraries may cause FTBFS here !
 
 # TDE variables
-%define tde_epoch 2
-%if "%{?tde_version}" == ""
-%define tde_version 14.1.5
-%endif
-%define pkg_rel 3
-
 %define tde_pkg tdeedu
 %define tde_prefix /opt/trinity
 
@@ -30,14 +24,14 @@
 Name:			trinity-%{tde_pkg}
 Summary:		Educational/Edutainment applications
 Group:			System/GUI/Other
-Version:		%{tde_version}
-Release:		%{?!preversion:%{pkg_rel}}%{?preversion:0_%{preversion}}%{?dist}
+Version:		14.1.5
+Release:		4
 URL:			http://www.trinitydesktop.org/
 
 License:	GPLv2+
 
 
-Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{tde_version}/main/core/%{tarball_name}-%{version}%{?preversion:~%{preversion}}.tar.xz
+Source0:		https://mirror.ppa.trinitydesktop.org/trinity/releases/R%{version}/main/core/%{tarball_name}-%{version}.tar.xz
 Source1:		%{name}-rpmlintrc
 
 BuildSystem:    cmake
@@ -53,9 +47,9 @@ BuildOption:    -DBUILD_KIG=%{?!with_kig:OFF}%{?with_kig:ON}
 BuildOption:    -DWITH_KIG_PYTHON_SCRIPTING=%{?!with_kig:OFF}%{?with_kig:ON}
 BuildOption:    -DWITH_V4L=%{?!with_v4l:OFF}%{?with_v4l:ON}
 
-BuildRequires: trinity-tdelibs-devel >= %{tde_version}
+BuildRequires: trinity-tdelibs-devel >= %{version}
 
-BuildRequires:	trinity-tde-cmake >= %{tde_version}
+BuildRequires:	trinity-tde-cmake >= %{version}
 BuildRequires: desktop-file-utils
 
 %{!?with_clang:BuildRequires:	gcc-c++}
@@ -93,41 +87,41 @@ BuildRequires:  pkgconfig(x11)
 BuildRequires:  pkgconfig(ice)
 BuildRequires:  pkgconfig(sm)
 
-Obsoletes:		trinity-kdeedu < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:		trinity-kdeedu = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes:		trinity-kdeedu-libs < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:		trinity-kdeedu-libs = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:		trinity-kdeedu < %{EVRD}
+Provides:		trinity-kdeedu = %{EVRD}
+Obsoletes:		trinity-kdeedu-libs < %{EVRD}
+Provides:		trinity-kdeedu-libs = %{EVRD}
 
 # Meta-package
-Requires: %{name}-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-blinken = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kalzium = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kalzium-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kanagram = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kbruch = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-keduca = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kgeography = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kgeography-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-khangman = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-data = %{EVRD}
+Requires: trinity-blinken = %{EVRD}
+Requires: trinity-kalzium = %{EVRD}
+Requires: trinity-kalzium-data = %{EVRD}
+Requires: trinity-kanagram = %{EVRD}
+Requires: trinity-kbruch = %{EVRD}
+Requires: trinity-keduca = %{EVRD}
+Requires: trinity-kgeography = %{EVRD}
+Requires: trinity-kgeography-data = %{EVRD}
+Requires: trinity-khangman = %{EVRD}
 %if %{with kig}
-Requires: trinity-kig = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: trinity-kig = %{EVRD}
 %endif
-Requires: trinity-kiten = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-klatin = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-klettres = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-klettres-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kmplot = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kpercentage = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kstars = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kstars-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-ktouch = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kturtle = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kverbos = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kvoctrain = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-kwordquiz = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-libtdeedu3 = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-libkiten1 = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: trinity-indi = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: trinity-kiten = %{EVRD}
+Requires: trinity-klatin = %{EVRD}
+Requires: trinity-klettres = %{EVRD}
+Requires: trinity-klettres-data = %{EVRD}
+Requires: trinity-kmplot = %{EVRD}
+Requires: trinity-kpercentage = %{EVRD}
+Requires: trinity-kstars = %{EVRD}
+Requires: trinity-kstars-data = %{EVRD}
+Requires: trinity-ktouch = %{EVRD}
+Requires: trinity-kturtle = %{EVRD}
+Requires: trinity-kverbos = %{EVRD}
+Requires: trinity-kvoctrain = %{EVRD}
+Requires: trinity-kwordquiz = %{EVRD}
+Requires: trinity-libtdeedu3 = %{EVRD}
+Requires: trinity-libkiten1 = %{EVRD}
+Requires: trinity-indi = %{EVRD}
 
 
 %description
@@ -184,7 +178,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-blinken
 Summary:	Trinity version of the Simon Says electronic memory game
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-blinken
 Blinken is based on an electronic game released in 1978, which
@@ -214,8 +208,8 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kalzium
 Summary:	Chemistry teaching tool for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-kalzium-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kalzium-data = %{EVRD}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kalzium
 Kalzium is a program which shows you the Periodic System of Elements
@@ -271,7 +265,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kanagram
 Summary:	Letter order game for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kanagram
 KAnagram is a game that is based on the word/letter puzzles that the
@@ -304,7 +298,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kbruch
 Summary:	Fraction calculation teaching tool for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kbruch
 KBruch is a small program to practice calculating with fractions.
@@ -330,7 +324,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-keduca
 Summary:	Interactive form-based tests for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-keduca
 KEduca is a flash-card application which allows you to make
@@ -361,8 +355,8 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kgeography
 Summary:	Geography learning tool for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-kgeography-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-kgeography-data = %{EVRD}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kgeography
 KGeography contains maps allowing you to learn various countries or
@@ -409,7 +403,7 @@ This package is part of Trinity, as a component of the TDE education module.
 Summary:	The classical hangman game for Trinity
 Group:		System/GUI/Other
 #Requires:	dustin-dustismo-sans-fonts
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-khangman
 KHangMan is a game based on the well known hangman game.  It is aimed
@@ -441,7 +435,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kig
 Summary:	Interactive geometry program for TDE
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kig
 Kig is an application for interactive geometry.  It is intended to
@@ -501,7 +495,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kiten
 Summary:	Japanese reference/study tool for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 #Requires:	ttf-kochi-gothic | ttf-kochi-mincho
 
 %description -n trinity-kiten
@@ -528,7 +522,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-klatin
 Summary:	Application to help revise/teach Latin
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-klatin
 KLatin is a program to help revise Latin.  There are three "sections"
@@ -563,8 +557,8 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-klettres
 Summary:	Foreign alphabet tutor for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-klettres-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-klettres-data = %{EVRD}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-klettres
 KLettres is an application specially designed to help the user to
@@ -612,7 +606,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kmplot
 Summary:	Mathematical function plotter for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kmplot
 KmPlot is a mathematical function plotter for TDE.  It has a powerful
@@ -650,7 +644,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kpercentage
 Summary:	Percentage calculation teaching tool for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kpercentage
 KPercentage is a small math application that will help pupils to
@@ -677,9 +671,9 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kstars
 Summary:	Desktop planetarium for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-kstars-data = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-indi = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
+Requires:	trinity-kstars-data = %{EVRD}
+Requires:	trinity-indi = %{EVRD}
 
 %description -n trinity-kstars
 KStars is a graphical desktop planetarium for TDE.  It depicts an
@@ -731,7 +725,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-ktouch
 Summary:	Touch typing tutor for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-ktouch
 KTouch is a program for learning touch typing - it helps you learn to
@@ -761,7 +755,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kturtle
 Summary:	Educational Logo programming environment
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kturtle
 KTurtle is an educational programming environment using the Logo
@@ -799,7 +793,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kverbos
 Summary:	Spanish verb form study application for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kverbos
 Kverbos allows the user to learn the forms of Spanish verbs.  The
@@ -831,7 +825,7 @@ Summary:	Vocabulary trainer for Trinity
 Group:		System/GUI/Other
 Requires:	perl
 Requires:	perl-libwww-perl
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kvoctrain
 KVocTrain is a little utility to help you train your vocabulary when
@@ -873,7 +867,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-kwordquiz
 Summary:	Flashcard and vocabulary learning program for Trinity
 Group:		System/GUI/Other
-Requires:	trinity-tdeedu-data = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-tdeedu-data = %{EVRD}
 
 %description -n trinity-kwordquiz
 KWordQuiz is a flashcard-based tool that helps you to master new
@@ -927,7 +921,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-libtdeedu-devel
 Summary:	Development files for Trinity educational library
 Group:		Development/Libraries/Other
-Requires:	trinity-libtdeedu3 = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-libtdeedu3 = %{EVRD}
 
 %description -n trinity-libtdeedu-devel
 The TDE-based library libtdeedu is used with educational
@@ -986,7 +980,7 @@ This package is part of Trinity, as a component of the TDE education module.
 %package -n trinity-libkiten-devel
 Summary:	Development files for Kiten library
 Group:		Development/Libraries/Other
-Requires:	trinity-libkiten1 = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	trinity-libkiten1 = %{EVRD}
 Requires:	trinity-tdelibs-devel >= %{version}
 
 %description -n trinity-libkiten-devel
@@ -1056,12 +1050,12 @@ This package is part of Trinity, as a component of the TDE education module.
 %package devel
 Summary:	Development files for %{name}
 Group:		Development/Libraries/Other
-Requires:	%{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libtdeedu-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires:	trinity-libkiten-devel = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires:	%{name} = %{EVRD}
+Requires:	trinity-libtdeedu-devel = %{EVRD}
+Requires:	trinity-libkiten-devel = %{EVRD}
 
-Obsoletes:	trinity-kdeedu-devel < %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:	trinity-kdeedu-devel = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes:	trinity-kdeedu-devel < %{EVRD}
+Provides:	trinity-kdeedu-devel = %{EVRD}
 
 %description devel
 This package contains the development files for tdeedu.

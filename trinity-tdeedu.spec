@@ -25,7 +25,7 @@ Name:			trinity-%{tde_pkg}
 Summary:		Educational/Edutainment applications
 Group:			System/GUI/Other
 Version:		14.1.5
-Release:		4
+Release:		5
 URL:			http://www.trinitydesktop.org/
 
 License:	GPLv2+

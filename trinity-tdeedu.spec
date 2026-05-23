@@ -16,7 +16,7 @@
 %define _disable_rebuild_configure 1
 
 # fixes error: Empty %files file …/debugsourcefiles.list
-%define _debugsource_template %{nil}
+%undefine _debugsource_template
 
 %define tarball_name %{tde_pkg}-trinity
 
@@ -24,8 +24,8 @@
 Name:			trinity-%{tde_pkg}
 Summary:		Educational/Edutainment applications
 Group:			System/GUI/Other
-Version:		14.1.5
-Release:		5
+Version:		14.1.6
+Release:		1
 URL:			http://www.trinitydesktop.org/
 
 License:	GPLv2+

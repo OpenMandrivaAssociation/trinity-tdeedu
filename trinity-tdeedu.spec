@@ -25,7 +25,7 @@ Name:			trinity-%{tde_pkg}
 Summary:		Educational/Edutainment applications
 Group:			System/GUI/Other
 Version:		14.1.6
-Release:		2
+Release:		3
 URL:			http://www.trinitydesktop.org/
 
 License:	GPLv2+
@@ -71,7 +71,7 @@ BuildRequires:  pkgconfig(libusb) pkgconfig(libusb-1.0)
 
 # PYTHON3 support
 %global python python
-%{!?python_sitearch:%global python_sitearch %(%{__python} -c "from distutils.sysconfig import get_python_lib; print get_python_lib(1)")}
+%{!?python_sitearch:%global python_sitearch %(%{__python} -c "import sysconfig; print(sysconfig.get_path('platlib'))")}
 BuildRequires:	%{python}
 BuildRequires:	%{python}-devel
 
